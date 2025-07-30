@@ -18,10 +18,29 @@ test
 ## 🚀 빠른 시작
 
 ### 설치
+
+#### 자동 설치 (권장)
 ```bash
 git clone https://github.com/juniper-31/bssm.git
 cd bssm
 ./install.sh
+```
+
+#### Ubuntu 23.04+ 사용자
+최신 Ubuntu에서는 pipx 사용을 권장합니다:
+```bash
+# pipx 설치 (없는 경우)
+sudo apt install pipx
+
+# bssm 설치
+git clone https://github.com/juniper-31/bssm.git
+cd bssm
+pipx install .
+pipx ensurepath
+
+# PATH 설정 (필요한 경우)
+export PATH="$HOME/.local/bin:$PATH"
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
 ```
 
 ### 사용법

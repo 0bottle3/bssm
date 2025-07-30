@@ -163,15 +163,55 @@ if [[ -n "$VIRTUAL_ENV" ]]; then
     exit 1
 fi
 
-echo -e "${YELLOW}🔧 의존성을 확인 중...${NC}"
-# 필요한 패키지들이 시스템에 설치되어 있는지 확인
-python3 -c "import boto3, click, rich, pydantic, keyring" 2>/dev/null || {
-    echo -e "${YELLOW}📦 필요한 의존성을 설치합니다...${NC}"
-    pip3 install --user boto3 click rich pydantic keyring
-}
+echo -e "${YELLOW}🔧 설치 방법을 확인 중...${NC}"
 
-# Python 패키지로 설치 (빠른 실행을 위해)
-pip3 install --user .
+# pipx 사용 가능한지 확인
+if command -v pipx &> /dev/null; then
+    echo -e "${BLUE}📦 pipx를 사용하여 설치합니다...${NC}"
+    pipx install .
+    pipx ensurepath
+    INSTALL_METHOD="pipx"
+    PYTHON_BIN_DIR="$HOME/.local/bin"
+else
+    # externally-managed-environment 에러 체크
+    if python3 -c "import sys; exit(0 if hasattr(sys, 'base_prefix') else 1)" 2>/dev/null && \
+       python3 -c "import pip._internal.utils.misc; pip._internal.utils.misc.check_externally_managed()" 2>/dev/null; then
+        echo -e "${YELLOW}⚠️  시스템에서 pip 직접 설치가 제한되어 있습니다.${NC}"
+        echo -e "${BLUE}📦 pipx를 설치하고 다시 시도합니다...${NC}"
+        
+        # pipx 설치 시도
+        if command -v apt &> /dev/null; then
+            sudo apt update && sudo apt install -y pipx
+        elif command -v yum &> /dev/null; then
+            sudo yum install -y pipx
+        elif command -v brew &> /dev/null; then
+            brew install pipx
+        else
+            echo -e "${RED}❌ pipx 자동 설치 실패. 수동으로 설치해주세요.${NC}"
+            echo -e "${YELLOW}💡 Ubuntu/Debian: sudo apt install pipx${NC}"
+            echo -e "${YELLOW}💡 CentOS/RHEL: sudo yum install pipx${NC}"
+            echo -e "${YELLOW}💡 macOS: brew install pipx${NC}"
+            exit 1
+        fi
+        
+        pipx install .
+        pipx ensurepath
+        INSTALL_METHOD="pipx"
+        PYTHON_BIN_DIR="$HOME/.local/bin"
+    else
+        echo -e "${BLUE}📦 pip를 사용하여 설치합니다...${NC}"
+        # 의존성 확인
+        python3 -c "import boto3, click, rich, pydantic, keyring" 2>/dev/null || {
+            echo -e "${YELLOW}📦 필요한 의존성을 설치합니다...${NC}"
+            pip3 install --user boto3 click rich pydantic keyring
+        }
+        
+        pip3 install --user .
+        INSTALL_METHOD="pip"
+        PYTHON_VERSION=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+        PYTHON_BIN_DIR="$HOME/.local/bin"
+    fi
+fi
 
 # Python 사용자 bin 디렉토리 확인
 PYTHON_VERSION=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
