@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bssm"
+version = "1.0.0"
+description = "Better AWS SSM CLI Tool"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "juniper-31", email = "juniper@kakao.com"},
+]
+keywords = ["aws", "ssm", "cli", "sso"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+]
+
+dependencies = [
+    "boto3>=1.26.0",
+    "click>=8.0.0",
+    "rich>=12.0.0",
+    "pydantic>=1.10.0",
+    "keyring>=23.0.0",
+]
+
+[project.scripts]
+bssm = "bssm.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/juniper-31/bssm"
+Repository = "https://github.com/juniper-31/bssm"
+Issues = "https://github.com/juniper-31/bssm/issues"

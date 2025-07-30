@@ -1,6 +1,35 @@
-# bssm - Better AWS SSM CLI Tool
+Metadata-Version: 2.4
+Name: bssm
+Version: 1.0.0
+Summary: Better AWS SSM CLI Tool - gossm의 완벽한 대안
+Home-page: https://github.com/juniper-31/bssm
+Author: juniper-31
+Author-email: juniper@kakao.com
+License: MIT
+Project-URL: Homepage, https://github.com/juniper-31/bssm
+Project-URL: Repository, https://github.com/juniper-31/bssm
+Project-URL: Issues, https://github.com/juniper-31/bssm/issues
+Keywords: aws,ssm,cli,sso,gossm,session-manager
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: boto3>=1.26.0
+Requires-Dist: click>=8.0.0
+Requires-Dist: rich>=12.0.0
+Requires-Dist: pydantic>=1.10.0
+Requires-Dist: keyring>=23.0.0
 
-test
+# bssm - Better AWS SSM CLI Tool
 
 🚀 AWS SSM을 더 쉽고 빠르게 사용할 수 있는 CLI 도구입니다.
 
