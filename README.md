@@ -65,10 +65,9 @@ Starting session with SessionId: user@domain.com-abc123
 sh-5.2$ whoami
 ssm-user
 sh-5.2$
+```
 
 <img width="1885" height="913" alt="image" src="https://github.com/user-attachments/assets/5943eb0c-7244-4f52-8846-225caab0de16" />
-
-```
 
 ### 2. 즐겨찾기 관리
 ```bash
