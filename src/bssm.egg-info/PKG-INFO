@@ -1,57 +1,103 @@
 Metadata-Version: 2.4
 Name: bssm
 Version: 1.0.0
-Summary: Better AWS SSM CLI Tool - gossm의 완벽한 대안
+Summary: Better AWS SSM CLI Tool
 Home-page: https://github.com/juniper-31/bssm
 Author: juniper-31
-Author-email: juniper@kakao.com
+Author-email: juniper-31 <juniper@kakao.com>
 License: MIT
 Project-URL: Homepage, https://github.com/juniper-31/bssm
 Project-URL: Repository, https://github.com/juniper-31/bssm
 Project-URL: Issues, https://github.com/juniper-31/bssm/issues
-Keywords: aws,ssm,cli,sso,gossm,session-manager
+Keywords: aws,ssm,cli,sso
 Classifier: Development Status :: 4 - Beta
 Classifier: Intended Audience :: Developers
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Operating System :: OS Independent
 Classifier: Programming Language :: Python :: 3
-Classifier: Programming Language :: Python :: 3.8
-Classifier: Programming Language :: Python :: 3.9
-Classifier: Programming Language :: Python :: 3.10
-Classifier: Programming Language :: Python :: 3.11
-Classifier: Programming Language :: Python :: 3.12
-Classifier: Programming Language :: Python :: 3.13
 Requires-Python: >=3.8
 Description-Content-Type: text/markdown
+License-File: LICENSE
 Requires-Dist: boto3>=1.26.0
 Requires-Dist: click>=8.0.0
 Requires-Dist: rich>=12.0.0
 Requires-Dist: pydantic>=1.10.0
 Requires-Dist: keyring>=23.0.0
+Dynamic: author
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
 
 # bssm - Better AWS SSM CLI Tool
 
+test
+
 🚀 AWS SSM을 더 쉽고 빠르게 사용할 수 있는 CLI 도구입니다.
 
-**gossm의 완벽한 대안** - 최신 AWS SSO v2를 완벽 지원하며, 더 나은 사용자 경험을 제공합니다.
 
 ## ✨ 주요 특징
 
-- 🔐 **AWS SSO v2 완벽 지원** - 최신 SSO 인증 방식 지원
-- 💳 **Access Key도 지원** - 모든 AWS 인증 방식 호환
-- 🎨 **아름다운 터미널 UI** - Rich 라이브러리 기반 인터랙티브 인터페이스
+- 🔐 **AWS SSO v2 지원** - 최신 SSO 인증 방식 지원
+- 💳 **Access Key 지원** - 모든 AWS 인증 방식 호환
+- 🎨 **터미널 UI** - Rich 라이브러리 기반 인터랙티브 인터페이스
 - 📊 **상세한 인스턴스 정보** - 이름, 상태, 타입, IP 주소 한눈에 확인
 - 🔧 **원클릭 설치** - Session Manager Plugin까지 자동 설치
 - 💾 **즐겨찾기 & 히스토리** - 자주 사용하는 인스턴스 관리
-- 🌍 **멀티 플랫폼** - macOS, Linux 지원
+- 🌍 **멀티 플랫폼** - Windows, macOS, Linux 지원
 
 ## 🚀 빠른 시작
 
 ### 설치
+
+#### 자동 설치 (권장)
 ```bash
 git clone https://github.com/juniper-31/bssm.git
 cd bssm
 ./install.sh
+```
+
+#### Ubuntu 23.04+ 사용자
+최신 Ubuntu에서는 pipx 사용을 권장합니다:
+```bash
+# pipx 설치 (없는 경우)
+sudo apt install pipx
+
+# bssm 설치
+git clone https://github.com/juniper-31/bssm.git
+cd bssm
+pipx install .
+pipx ensurepath
+
+# PATH 설정 (필요한 경우)
+export PATH="$HOME/.local/bin:$PATH"
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+```
+
+#### Windows 사용자
+PowerShell 또는 명령 프롬프트에서:
+
+**PowerShell (권장):**
+```powershell
+# 실행 정책 설정 (한 번만)
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+# bssm 설치
+git clone https://github.com/juniper-31/bssm.git
+cd bssm
+.\install.ps1
+```
+
+**명령 프롬프트 (CMD):**
+```cmd
+git clone https://github.com/juniper-31/bssm.git
+cd bssm
+install.bat
+```
+
+**수동 설치:**
+```cmd
+pip install --user .
+# PATH에 %APPDATA%\Python\Scripts 추가 필요
 ```
 
 ### 사용법
@@ -94,8 +140,10 @@ $ bssm connect --profile gitlab-prod
 Starting session with SessionId: user@domain.com-abc123
 sh-5.2$ whoami
 ssm-user
-sh-5.2$ 
+sh-5.2$
 ```
+
+<img width="1885" height="913" alt="image" src="https://github.com/user-attachments/assets/5943eb0c-7244-4f52-8846-225caab0de16" />
 
 ### 2. 즐겨찾기 관리
 ```bash

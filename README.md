@@ -13,7 +13,7 @@ test
 - 📊 **상세한 인스턴스 정보** - 이름, 상태, 타입, IP 주소 한눈에 확인
 - 🔧 **원클릭 설치** - Session Manager Plugin까지 자동 설치
 - 💾 **즐겨찾기 & 히스토리** - 자주 사용하는 인스턴스 관리
-- 🌍 **멀티 플랫폼** - macOS, Linux 지원
+- 🌍 **멀티 플랫폼** - Windows, macOS, Linux 지원
 
 ## 🚀 빠른 시작
 
@@ -41,6 +41,33 @@ pipx ensurepath
 # PATH 설정 (필요한 경우)
 export PATH="$HOME/.local/bin:$PATH"
 echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+```
+
+#### Windows 사용자
+PowerShell 또는 명령 프롬프트에서:
+
+**PowerShell (권장):**
+```powershell
+# 실행 정책 설정 (한 번만)
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+# bssm 설치
+git clone https://github.com/juniper-31/bssm.git
+cd bssm
+.\install.ps1
+```
+
+**명령 프롬프트 (CMD):**
+```cmd
+git clone https://github.com/juniper-31/bssm.git
+cd bssm
+install.bat
+```
+
+**수동 설치:**
+```cmd
+pip install --user .
+# PATH에 %APPDATA%\Python\Scripts 추가 필요
 ```
 
 ### 사용법
@@ -149,6 +176,45 @@ sudo dpkg -i session-manager-plugin.deb
 # 가상환경 비활성화 후 재설치
 deactivate
 ./install.sh
+```
+
+### Windows PATH 문제
+Windows에서 `bssm` 명령어를 찾을 수 없는 경우:
+
+**1. 자동 해결 (권장):**
+```powershell
+# PowerShell에서 다시 실행
+.\install.ps1
+```
+
+**2. 수동 PATH 추가:**
+```powershell
+# Python Scripts 디렉토리 확인
+python -c "import site; print(site.USER_BASE + '\\Scripts')"
+
+# 환경변수에 수동 추가 (예시 경로)
+$env:PATH += ";C:\Users\YourName\AppData\Roaming\Python\Python311\Scripts"
+```
+
+**3. 시스템 환경변수 설정:**
+- `Win + R` → `sysdm.cpl` → 고급 → 환경 변수
+- 사용자 변수에서 `PATH` 선택 → 편집
+- `%APPDATA%\Python\Scripts` 추가
+
+**4. 새 터미널 열기:**
+```cmd
+# 환경변수 변경 후 새 명령 프롬프트/PowerShell 열기
+bssm --help
+```
+
+### Windows Session Manager Plugin 오류
+```powershell
+# 수동 설치
+# https://s3.amazonaws.com/session-manager-downloads/plugin/latest/windows/SessionManagerPluginSetup.exe
+# 다운로드 후 실행
+
+# 설치 확인
+session-manager-plugin
 ```
 
 ## 🗑️ 제거 방법

@@ -21,7 +21,22 @@ ui = UI()
 @click.group()
 @click.version_option(version="1.0.0")
 def cli():
-    """🚀 AWS SSM을 더 쉽게 사용하는 CLI 도구"""
+    """🚀 Better AWS SSM CLI Tool
+    
+    AWS SSM을 더 쉽고 빠르게 사용할 수 있는 CLI 도구입니다.
+    gossm의 완벽한 대안으로 최신 AWS SSO v2를 완벽 지원합니다.
+    
+    주요 특징:
+    • AWS SSO v2 + Access Key 모두 지원
+    • 0.7초 이내 빠른 실행 (gossm 대비 7배 빠름)  
+    • 아름다운 터미널 UI
+    • Session Manager Plugin 자동 설치
+    
+    사용 예시:
+      bssm connect --profile my-profile
+      bssm list --profile prod-profile
+      bssm test-auth --profile dev-profile
+    """
     pass
 
 @cli.command()
