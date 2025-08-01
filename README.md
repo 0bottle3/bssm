@@ -1,6 +1,5 @@
 # bssm - Better AWS SSM CLI Tool
 
-test
 
 🚀 AWS SSM을 더 쉽고 빠르게 사용할 수 있는 CLI 도구입니다.
 
