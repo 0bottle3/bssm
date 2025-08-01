@@ -30,7 +30,6 @@ Dynamic: requires-python
 
 # bssm - Better AWS SSM CLI Tool
 
-test
 
 🚀 AWS SSM을 더 쉽고 빠르게 사용할 수 있는 CLI 도구입니다.
 
@@ -206,6 +205,45 @@ sudo dpkg -i session-manager-plugin.deb
 # 가상환경 비활성화 후 재설치
 deactivate
 ./install.sh
+```
+
+### Windows PATH 문제
+Windows에서 `bssm` 명령어를 찾을 수 없는 경우:
+
+**1. 자동 해결 (권장):**
+```powershell
+# PowerShell에서 다시 실행
+.\install.ps1
+```
+
+**2. 수동 PATH 추가:**
+```powershell
+# Python Scripts 디렉토리 확인
+python -c "import site; print(site.USER_BASE + '\\Scripts')"
+
+# 환경변수에 수동 추가 (예시 경로)
+$env:PATH += ";C:\Users\YourName\AppData\Roaming\Python\Python311\Scripts"
+```
+
+**3. 시스템 환경변수 설정:**
+- `Win + R` → `sysdm.cpl` → 고급 → 환경 변수
+- 사용자 변수에서 `PATH` 선택 → 편집
+- `%APPDATA%\Python\Scripts` 추가
+
+**4. 새 터미널 열기:**
+```cmd
+# 환경변수 변경 후 새 명령 프롬프트/PowerShell 열기
+bssm --help
+```
+
+### Windows Session Manager Plugin 오류
+```powershell
+# 수동 설치
+# https://s3.amazonaws.com/session-manager-downloads/plugin/latest/windows/SessionManagerPluginSetup.exe
+# 다운로드 후 실행
+
+# 설치 확인
+session-manager-plugin
 ```
 
 ## 🗑️ 제거 방법

@@ -54,30 +54,15 @@ class SSMManager:
             for i in range(0, len(instance_ids), batch_size):
                 batch_ids = instance_ids[i:i + batch_size]
                 
-                # EC2 인스턴스 정보도 페이지네이션 처리
-                next_token = None
-                while True:
-                    if next_token:
-                        ec2_response = self.ec2_client.describe_instances(
-                            InstanceIds=batch_ids,
-                            NextToken=next_token,
-                            MaxResults=100
-                        )
-                    else:
-                        ec2_response = self.ec2_client.describe_instances(
-                            InstanceIds=batch_ids,
-                            MaxResults=100
-                        )
-                    
-                    # 인스턴스 정보 처리
-                    for reservation in ec2_response['Reservations']:
-                        for instance in reservation['Instances']:
-                            all_instances.append(instance)
-                    
-                    # 다음 페이지 확인
-                    next_token = ec2_response.get('NextToken')
-                    if not next_token:
-                        break
+                # EC2 인스턴스 정보 조회 (InstanceIds 사용시 MaxResults 불가)
+                ec2_response = self.ec2_client.describe_instances(
+                    InstanceIds=batch_ids
+                )
+                
+                # 인스턴스 정보 처리
+                for reservation in ec2_response['Reservations']:
+                    for instance in reservation['Instances']:
+                        all_instances.append(instance)
             
             # 수집된 모든 인스턴스 정보 처리
             instances = []

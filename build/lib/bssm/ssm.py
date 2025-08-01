@@ -14,50 +14,89 @@ class SSMManager:
         self.ec2_client = session.client('ec2')
         
     def get_instances(self) -> List[Dict]:
-        """SSM 연결 가능한 EC2 인스턴스 목록 가져오기"""
+        """SSM 연결 가능한 EC2 인스턴스 목록 가져오기 (페이지네이션 지원)"""
         try:
-            # SSM 관리 인스턴스 목록
-            ssm_response = self.ssm_client.describe_instance_information()
-            ssm_instances = {
-                instance['InstanceId']: instance 
-                for instance in ssm_response['InstanceInformationList']
-                if instance['PingStatus'] == 'Online'
-            }
+            # SSM 관리 인스턴스 목록 (페이지네이션 처리)
+            ssm_instances = {}
+            next_token = None
+            
+            while True:
+                if next_token:
+                    ssm_response = self.ssm_client.describe_instance_information(
+                        NextToken=next_token,
+                        MaxResults=50  # 한 번에 최대 50개씩
+                    )
+                else:
+                    ssm_response = self.ssm_client.describe_instance_information(
+                        MaxResults=50
+                    )
+                
+                # 온라인 상태인 인스턴스만 수집
+                for instance in ssm_response['InstanceInformationList']:
+                    if instance['PingStatus'] == 'Online':
+                        ssm_instances[instance['InstanceId']] = instance
+                
+                # 다음 페이지가 있는지 확인
+                next_token = ssm_response.get('NextToken')
+                if not next_token:
+                    break
             
             if not ssm_instances:
                 return []
             
-            # EC2 인스턴스 세부 정보
-            ec2_response = self.ec2_client.describe_instances(
-                InstanceIds=list(ssm_instances.keys())
-            )
+            # EC2 인스턴스 세부 정보 (배치 처리로 최적화)
+            all_instances = []
+            instance_ids = list(ssm_instances.keys())
             
+            # EC2 describe_instances는 한 번에 많은 인스턴스를 처리할 수 있지만
+            # 너무 많으면 타임아웃이 날 수 있으므로 100개씩 배치 처리
+            batch_size = 100
+            for i in range(0, len(instance_ids), batch_size):
+                batch_ids = instance_ids[i:i + batch_size]
+                
+                # EC2 인스턴스 정보 조회 (InstanceIds 사용시 MaxResults 불가)
+                ec2_response = self.ec2_client.describe_instances(
+                    InstanceIds=batch_ids
+                )
+                
+                # 인스턴스 정보 처리
+                for reservation in ec2_response['Reservations']:
+                    for instance in reservation['Instances']:
+                        all_instances.append(instance)
+            
+            # 수집된 모든 인스턴스 정보 처리
             instances = []
-            for reservation in ec2_response['Reservations']:
-                for instance in reservation['Instances']:
-                    instance_id = instance['InstanceId']
-                    
-                    # 인스턴스 이름 찾기
-                    name = instance_id
-                    for tag in instance.get('Tags', []):
-                        if tag['Key'] == 'Name':
-                            name = tag['Value']
-                            break
-                    
-                    instances.append({
-                        'InstanceId': instance_id,
-                        'Name': name,
-                        'State': instance['State']['Name'],
-                        'InstanceType': instance['InstanceType'],
-                        'PrivateIpAddress': instance.get('PrivateIpAddress', 'N/A'),
-                        'PublicIpAddress': instance.get('PublicIpAddress', 'N/A'),
-                        'LaunchTime': instance['LaunchTime'],
-                        'SSMStatus': ssm_instances[instance_id]['PingStatus'],
-                        'Platform': ssm_instances[instance_id].get('PlatformType', 'Unknown')
-                    })
+            for instance in all_instances:
+                instance_id = instance['InstanceId']
+                
+                # SSM에 등록되지 않은 인스턴스는 제외
+                if instance_id not in ssm_instances:
+                    continue
+                
+                # 인스턴스 이름 찾기
+                name = instance_id
+                for tag in instance.get('Tags', []):
+                    if tag['Key'] == 'Name':
+                        name = tag['Value']
+                        break
+                
+                instances.append({
+                    'InstanceId': instance_id,
+                    'Name': name,
+                    'State': instance['State']['Name'],
+                    'InstanceType': instance['InstanceType'],
+                    'PrivateIpAddress': instance.get('PrivateIpAddress', 'N/A'),
+                    'PublicIpAddress': instance.get('PublicIpAddress', 'N/A'),
+                    'LaunchTime': instance['LaunchTime'],
+                    'SSMStatus': ssm_instances[instance_id]['PingStatus'],
+                    'Platform': ssm_instances[instance_id].get('PlatformType', 'Unknown')
+                })
             
             # 이름순으로 정렬
             instances.sort(key=lambda x: x['Name'].lower())
+            
+            # 총 개수 로그 출력
+            rprint(f"[green]✅ 총 {len(instances)}개의 SSM 연결 가능한 인스턴스를 찾았습니다.[/green]")
             return instances
             
         except Exception as e:
